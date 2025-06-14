@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wagtail
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wagtail
+  template:
+    metadata:
+      labels:
+        app: wagtail
+    spec:
+      containers:
+        - name: wagtail
+          image: kickb1/wagtail-site:v1.0.3
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          volumeMounts:
+            - name: app-source
+              mountPath: /app
+          env:
+            - name: DATABASE_HOST
+              value: "postgres"          # Replace with your PostgreSQL service name if different
+            - name: DATABASE_NAME
+              value: "wagtail"       # Replace with your actual DB name
+            - name: DATABASE_USER
+              value: "kick"       # Replace with your actual DB user
+            - name: DATABASE_PASSWORD
+              value: "kick"   # Replace with your actual DB password
+            - name: DATABASE_PORT
+              value: "5432"               # Usually 5432 for PostgreSQL
+      volumes:
+        - name: app-source
+          hostPath:
+            path: /home/kick/valknode/wagtail-src
+            type: Directory
+
+          # env:
+          #   - name: DATABASE_URL
+          #     value: postgresql://kick:kick@postgres:5432/wagtail
