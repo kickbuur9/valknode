@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: wagtail
-          image: kickb1/wagtail-site:v1.0.3
+          image: kickb1/wagtail-site:v1.4
           imagePullPolicy: Always
           ports:
             - containerPort: 8000
@@ -23,15 +23,15 @@ spec:
               mountPath: /app
           env:
             - name: DATABASE_HOST
-              value: "postgres"          # Replace with your PostgreSQL service name if different
+              value: "postgres"
             - name: DATABASE_NAME
-              value: "wagtail"       # Replace with your actual DB name
+              value: "wagtail"
             - name: DATABASE_USER
-              value: "kick"       # Replace with your actual DB user
+              value: "kick"
             - name: DATABASE_PASSWORD
-              value: "kick"   # Replace with your actual DB password
+              value: "kick"
             - name: DATABASE_PORT
-              value: "5432"               # Usually 5432 for PostgreSQL
+              value: "5432"
       volumes:
         - name: app-source
           hostPath:

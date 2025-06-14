@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags static %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/card.css' %}">
+{% endblock %}
+
+{% block content %}
+  <h2>Writeups</h2>
+  <div class="writeup-cards">
+    {% for child in page.get_children.live %}
+      {% with child.specific as writeup %}
+        <div class="writeup-card">
+          <h3><a href="{{ writeup.url }}">{{ writeup.title }}</a></h3>
+          <p>{{ writeup.summary }}</p>
+        </div>
+      {% endwith %}
+    {% endfor %}
+  </div>
+{% endblock %}

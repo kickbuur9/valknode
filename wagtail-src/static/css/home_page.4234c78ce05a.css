@@ -1,0 +1,10 @@
+h1 {
+    font-size: 18px;
+    color: aqua;
+    margin: 0;
+}
+p {
+    background-color: transparent;
+    color: #308282;
+    text-decoration: underline;
+}

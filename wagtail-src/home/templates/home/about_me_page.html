@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block content %}
+  <h2>About Me</h2>
+
+  {% if page.profile_image %}
+    {% image page.profile_image fill-200x200 as img %}
+    <img src="{{ img.url }}" alt="Profile Picture" style="border-radius: 100px;">
+  {% endif %}
+
+  <div>{{ page.bio|richtext }}</div>
+
+  <h3>Highlights & Certificates</h3>
+  {% for block in page.highlights %}
+    {{ block }}
+  {% endfor %}
+{% endblock %}
