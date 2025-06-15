@@ -2,17 +2,49 @@
 {% load wagtailcore_tags wagtailimages_tags %}
 
 {% block content %}
-  <h2>About Me</h2>
+<section class="container my-5">
+  <h2 class="mb-4">About Me</h2>
+
+  {% if page.intro %}
+    <div class="mb-4">
+      {{ page.intro|richtext }}
+    </div>
+  {% endif %}
 
   {% if page.profile_image %}
     {% image page.profile_image fill-200x200 as img %}
-    <img src="{{ img.url }}" alt="Profile Picture" style="border-radius: 100px;">
+    <div class="mb-4">
+      <img src="{{ img.url }}" alt="Profile Picture" style="border-radius: 100px;">
+    </div>
   {% endif %}
 
-  <div>{{ page.bio|richtext }}</div>
+  <div class="mb-5">
+    {{ page.bio|richtext }}
+  </div>
 
-  <h3>Highlights & Certificates</h3>
-  {% for block in page.highlights %}
-    {{ block }}
-  {% endfor %}
+  {% if page.highlights %}
+    <h3 class="mb-3">Highlights & Certificates</h3>
+    <div class="row">
+      {% for block in page.highlights %}
+        {% if block.block_type == "certificate" %}
+          <div class="col-md-6 mb-4">
+            <div class="card h-100">
+              <div class="card-body">
+                <strong class="card-title d-block mb-2">{{ block.value.title }}</strong>
+                {% if block.value.link %}
+                  <a href="{{ block.value.link }}" target="_blank" class="d-block mb-2">View Certificate</a>
+                {% endif %}
+                <p class="card-text">{{ block.value.description }}</p>
+              </div>
+            </div>
+          </div>
+        {% elif block.block_type == "paragraph" %}
+          <div class="col-12 mb-4">
+            {{ block.value|richtext }}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% endif %}
+</section>
 {% endblock %}

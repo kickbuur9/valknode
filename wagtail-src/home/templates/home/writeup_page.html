@@ -6,15 +6,24 @@
 {% endblock %}
 
 {% block content %}
-  <h2>Writeups</h2>
-  <div class="writeup-cards">
+<section class="container my-5">
+  <h2 class="mb-4">Writeups</h2>
+  <div class="row">
     {% for child in page.get_children.live %}
       {% with child.specific as writeup %}
-        <div class="writeup-card">
-          <h3><a href="{{ writeup.url }}">{{ writeup.title }}</a></h3>
-          <p>{{ writeup.summary }}</p>
+        <div class="col-md-4 mb-4">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title"><a href="{{ writeup.url }}">{{ writeup.title }}</a></h5>
+              <p class="card-text">{{ writeup.summary|truncatewords:20 }}</p>
+              <a href="{{ writeup.url }}" class="btn btn-outline-primary">Read more</a>
+            </div>
+          </div>
         </div>
       {% endwith %}
+    {% empty %}
+      <p>No writeups yet.</p>
     {% endfor %}
   </div>
+</section>
 {% endblock %}

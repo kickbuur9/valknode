@@ -24,19 +24,38 @@ class HeadingBlock(blocks.StructBlock):
         icon = 'title'
         label = 'Heading'
 
-
 class CertificateBlock(blocks.StructBlock):
     title = blocks.CharBlock(required=True)
+    description = blocks.TextBlock(required=True)
     link = blocks.URLBlock(required=False)
-    description = blocks.TextBlock(required=False)
 
     class Meta:
-        template = 'blocks/certificate_block.html'
-        icon = 'doc-full'
-        label = 'Certificate'
+        icon = "doc-full"
+        label = "Certificate"
 
+class AboutMePage(Page):
+    intro = RichTextField(blank=True)
+    profile_image = models.ForeignKey(
+        Image,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+'
+    )
+    bio = RichTextField(blank=True)
 
-# ========== HOMEPAGE ==========
+    highlights = StreamField([
+        ('certificate', CertificateBlock()),
+        ('paragraph', blocks.RichTextBlock()),
+    ], use_json_field=True, blank=True)
+
+    content_panels = Page.content_panels + [
+        FieldPanel('intro'),
+        FieldPanel('profile_image'),
+        FieldPanel('bio'),
+        FieldPanel('highlights'),
+    ]
+
 
 class HomePage(Page):
     def get_context(self, request):
@@ -51,32 +70,6 @@ class HomePage(Page):
         context['latest_posts'] = [p.specific for p in latest_posts]
         return context
 
-
-# ========== ABOUT ME PAGE ==========
-
-class AboutMePage(Page):
-    profile_image = models.ForeignKey(
-        Image,
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name='+'
-    )
-    bio = RichTextField(blank=True)
-    highlights = StreamField([
-        ('certificate', CertificateBlock()),
-        ('paragraph', blocks.RichTextBlock()),
-    ], use_json_field=True, blank=True)
-
-    content_panels = Page.content_panels + [
-        FieldPanel('profile_image'),
-        FieldPanel('bio'),
-        FieldPanel('highlights'),
-    ]
-
-
-# ========== WRITEUP LISTING PAGE ==========
-
 class WriteupPage(Page):
     intro = RichTextField(blank=True)
 
@@ -86,8 +79,6 @@ class WriteupPage(Page):
 
     subpage_types = ['WriteupItemPage']
 
-
-# ========== INDIVIDUAL WRITEUP ITEM PAGE ==========
 
 class WriteupItemPage(Page):
     summary = models.CharField(max_length=300, blank=True)
