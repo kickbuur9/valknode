@@ -39,13 +39,17 @@ class CertificateBlock(blocks.StructBlock):
 # ========== HOMEPAGE ==========
 
 class HomePage(Page):
-    subtitle = models.CharField(max_length=255, blank=True, help_text="Subtitle for the homepage")
-    intro_text = RichTextField(blank=True, help_text="Introductory text for the homepage")
-
-    content_panels = Page.content_panels + [
-        FieldPanel('subtitle'),
-        FieldPanel('intro_text'),
-    ]
+    def get_context(self, request):
+        context = super().get_context(request)
+        # Get the latest 3 live pages under this site (excluding the homepage itself)
+        latest_posts = (
+            Page.objects.live()
+            .descendant_of(self)
+            .exclude(id=self.id)
+            .order_by('-first_published_at')[:3]
+        )
+        context['latest_posts'] = [p.specific for p in latest_posts]
+        return context
 
 
 # ========== ABOUT ME PAGE ==========
