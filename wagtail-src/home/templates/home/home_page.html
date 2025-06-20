@@ -9,11 +9,11 @@
   <div class="row">
     {% for post in latest_posts %}
     <div class="col-md-4 mb-4">
-      <div class="card h-100">
+      <div class="card h-100 position-relative">
         <div class="card-body">
           <h5 class="card-title">{{ post.title }}</h5>
           <p class="card-text">{{ post.search_description|truncatewords:20 }}</p>
-          <a href="{% pageurl post %}" class="btn btn-outline-primary">Read more</a>
+          <a href="{% pageurl post %}" class="stretched-link"></a>
         </div>
       </div>
     </div>
@@ -22,4 +22,5 @@
     {% endfor %}
   </div>
 </section>
+
 {% endblock %}

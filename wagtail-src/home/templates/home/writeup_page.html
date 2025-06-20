@@ -1,29 +1,33 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags static %}
-
-{% block extra_css %}
-  <link rel="stylesheet" href="{% static 'css/card.css' %}">
-{% endblock %}
+{% load rating_tags %}
+{% load wagtailcore_tags wagtailimages_tags static %}
 
 {% block content %}
 <section class="container my-5">
   <h2 class="mb-4">Writeups</h2>
   <div class="row">
     {% for child in page.get_children.live %}
-      {% with child.specific as writeup %}
-        <div class="col-md-4 mb-4">
-          <div class="card h-100">
-            <div class="card-body">
-              <h5 class="card-title"><a href="{{ writeup.url }}">{{ writeup.title }}</a></h5>
-              <p class="card-text">{{ writeup.summary|truncatewords:20 }}</p>
-              <a href="{{ writeup.url }}" class="btn btn-outline-primary">Read more</a>
-            </div>
+    {% with child.specific as writeup %}
+    <div class="col-md-4 mb-4">
+      {% if writeup.background_image %}
+      {% image writeup.background_image fill-600x400 as bg_img %}
+      <div class="card h-100 position-relative text-white" style="background-image: url('{{ bg_img.url }}');
+                                   background-size: cover;
+                                   background-position: center;">
+        {% else %}
+        <div class="card h-100 position-relative text-white bg-dark">
+          {% endif %}
+          <div class="card-body" style="background: rgba(0,0,0,0.5); border-radius: 0.5rem;">
+            <h5 class="card-title">{{ writeup.title }}</h5>
+            <p class="card-text">{{ writeup.summary|truncatewords:20 }}</p>
+            <a href="{{ writeup.url }}" class="stretched-link"></a>
           </div>
         </div>
+      </div>
       {% endwith %}
-    {% empty %}
+      {% empty %}
       <p>No writeups yet.</p>
-    {% endfor %}
-  </div>
+      {% endfor %}
+    </div>
 </section>
 {% endblock %}

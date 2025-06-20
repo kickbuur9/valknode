@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
 from wagtail.fields import StreamField, RichTextField
 from wagtail.models import Page
@@ -82,6 +83,22 @@ class WriteupPage(Page):
 
 class WriteupItemPage(Page):
     summary = models.CharField(max_length=300, blank=True)
+
+    author = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text="Name of the person who wrote this writeup"
+    )
+
+    rating = models.DecimalField(
+        max_digits=2,
+        decimal_places=1,
+        choices=[(x / 2, f"{x / 2}") for x in range(2, 11)],  # 1.0 to 5.0 in 0.5 steps
+        blank=True,
+        null=True,
+        help_text="Optional rating between 1.0 and 5.0 (halves allowed)"
+    )
+
     body = StreamField([
         ('heading', HeadingBlock()),
         ('paragraph', blocks.RichTextBlock()),
@@ -89,9 +106,31 @@ class WriteupItemPage(Page):
         ('code', CodeBlock(label='Code')),
     ], use_json_field=True, blank=True)
 
+    background_image = models.ForeignKey(
+        Image,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+'
+    )
+
     content_panels = Page.content_panels + [
         FieldPanel('summary'),
+        FieldPanel('author'),
+        FieldPanel('rating'),
+        FieldPanel('background_image'),
         FieldPanel('body'),
     ]
 
     parent_page_types = ['WriteupPage']
+
+    class Meta:
+        verbose_name = "Writeup Item"
+
+    @property
+    def published_date(self):
+        return self.first_published_at
+
+    @property
+    def updated_date(self):
+        return self.last_published_at

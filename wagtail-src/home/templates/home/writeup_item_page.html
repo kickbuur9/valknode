@@ -1,11 +1,39 @@
 {% extends "base.html" %}
+{% load rating_tags %}
 {% load wagtailcore_tags wagtailimages_tags %}
 
 {% block content %}
-  <h1>{{ page.title }}</h1>
-  <p>{{ page.summary }}</p>
+<section class="container my-5">
 
-  {% for block in page.body %}
-    {{ block }}
-  {% endfor %}
+  <div class="position-relative">
+    {% if page.background_image %}
+      {% image page.background_image width-400 as img %}
+      <img src="{{ img.url }}" alt="{{ img.alt }}"
+           class="img-fluid rounded shadow mb-2 float-md-end ms-md-4 mb-3"
+           style="max-width: 40%;">
+    {% endif %}
+
+    <h1>{{ page.title }}</h1>
+    <p class="text-muted mb-1">
+      Posted on {{ page.first_published_at|date:"F j, Y" }}<br>
+      Last updated on {{ page.last_published_at|date:"F j, Y, H:i" }}
+    </p>
+    {% if page.author %}
+      <p class="fw-semibold text-muted">By {{ page.author }}</p>
+    {% endif %}
+    {% if page.rating %}
+      <div class="rating-icons my-3">
+        {{ page.rating|render_rating }}
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Body blocks -->
+  <div class="mt-4 clear-fix">
+    {% for block in page.body %}
+      {{ block }}
+    {% endfor %}
+  </div>
+
+</section>
 {% endblock %}
