@@ -1,11 +1,14 @@
 import os
 from .base import *
 
-DEBUG = True
+DEBUG = False
 
 # Static and media file roots (used by Docker image build and runtime)
-STATIC_ROOT = os.environ.get('STATIC_ROOT', '/vol/web/static')
-MEDIA_ROOT = os.environ.get('MEDIA_ROOT', '/vol/web/media')
+# STATIC_ROOT = os.environ.get('STATIC_ROOT', '/vol/web/static')
+# MEDIA_ROOT = os.environ.get('MEDIA_ROOT', '/vol/web/media')
+
+STATIC_ROOT = '/vol/web/static'
+MEDIA_ROOT = '/vol/web/media'
 
 # Security settings
 SECRET_KEY = os.environ.get('SECRET_KEY', 'unsafe-temp-key-do-not-use-in-prod')
@@ -48,9 +51,8 @@ CSRF_TRUSTED_ORIGINS = [
     'http://192.168.178.35',  # or whatever IP you're using
 ]
 
-USE_X_FORWARDED_HOST = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
+# USE_X_FORWARDED_HOST = True
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Wagtail admin base URL
 WAGTAILADMIN_BASE_URL = os.environ.get('WAGTAILADMIN_BASE_URL', 'http://192.168.178.155')
