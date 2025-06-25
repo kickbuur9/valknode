@@ -1,7 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx
+  name: nginx-server
+  namespace: default
+  labels:
+    app: nginx
 spec:
   replicas: 1
   selector:
@@ -14,14 +17,26 @@ spec:
     spec:
       containers:
         - name: nginx
-          image: nginx:latest
+          image: nginx:latest # Or your custom Nginx image
           ports:
             - containerPort: 80
           volumeMounts:
-            - name: nginx-config
+            - name: nginx-config-volume
               mountPath: /etc/nginx/nginx.conf
-              subPath: nginx.conf
+              subPath: nginx.conf # Mounts only the file, not the directory
+            - name: staticfiles-storage # Mount the staticfiles PVC
+              mountPath: /vol/web/static # Must match STATIC_ROOT path from Wagtail
+              readOnly: true # Nginx only needs to read these
+            - name: media-storage # Mount the media PVC
+              mountPath: /vol/web/media # Must match MEDIA_ROOT path from Wagtail
+              readOnly: true # Nginx only needs to read these
       volumes:
-        - name: nginx-config
+        - name: nginx-config-volume
           configMap:
-            name: nginx-config
+            name: nginx-config # Your Nginx ConfigMap
+        - name: staticfiles-storage
+          persistentVolumeClaim:
+            claimName: wagtail-staticfiles # Reference the staticfiles PVC
+        - name: media-storage
+          persistentVolumeClaim:
+            claimName: wagtail-media # Reference the media PVC

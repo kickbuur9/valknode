@@ -1,6 +1,5 @@
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
-from wagtail.admin.panels import FieldPanel, MultiFieldPanel
+from wagtail.admin.panels import FieldPanel
 from wagtail.fields import StreamField, RichTextField
 from wagtail.models import Page
 from wagtail import blocks
@@ -9,21 +8,25 @@ from wagtail.images.models import Image
 from wagtailcodeblock.blocks import CodeBlock
 
 
-# ========== CUSTOM BLOCKS ==========
-
+# Custom HeadingBlock with text and size (h2, h3, h4)
 class HeadingBlock(blocks.StructBlock):
     text = blocks.CharBlock(required=True, help_text="Text for the heading")
     size = blocks.ChoiceBlock(
-        choices=[('h2', 'Heading 2'), ('h3', 'Heading 3'), ('h4', 'Heading 4')],
+        choices=[
+            ('h2', 'Heading 2'),
+            ('h3', 'Heading 3'),
+            ('h4', 'Heading 4'),
+        ],
         default='h2',
         required=True,
         help_text="Size of the heading"
     )
 
     class Meta:
-        template = 'blocks/heading_block.html'
+        template = 'blocks/heading_block.html'  # This template should add id="{{ text|slugify }}"
         icon = 'title'
         label = 'Heading'
+
 
 class CertificateBlock(blocks.StructBlock):
     title = blocks.CharBlock(required=True)
@@ -33,6 +36,7 @@ class CertificateBlock(blocks.StructBlock):
     class Meta:
         icon = "doc-full"
         label = "Certificate"
+
 
 class AboutMePage(Page):
     intro = RichTextField(blank=True)
@@ -61,7 +65,6 @@ class AboutMePage(Page):
 class HomePage(Page):
     def get_context(self, request):
         context = super().get_context(request)
-        # Get the latest 3 live pages under this site (excluding the homepage itself)
         latest_posts = (
             Page.objects.live()
             .descendant_of(self)
@@ -70,6 +73,7 @@ class HomePage(Page):
         )
         context['latest_posts'] = [p.specific for p in latest_posts]
         return context
+
 
 class WriteupPage(Page):
     intro = RichTextField(blank=True)
@@ -83,13 +87,11 @@ class WriteupPage(Page):
 
 class WriteupItemPage(Page):
     summary = models.CharField(max_length=300, blank=True)
-
     author = models.CharField(
         max_length=100,
         blank=True,
         help_text="Name of the person who wrote this writeup"
     )
-
     rating = models.DecimalField(
         max_digits=2,
         decimal_places=1,

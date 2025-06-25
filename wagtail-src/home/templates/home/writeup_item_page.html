@@ -1,26 +1,29 @@
 {% extends "base.html" %}
-{% load rating_tags %}
-{% load wagtailcore_tags wagtailimages_tags %}
+{% load wagtailcore_tags wagtailimages_tags rating_tags static %}
 
 {% block content %}
-<section class="container my-5">
+  <div class="mb-4">
 
-  <div class="position-relative">
     {% if page.background_image %}
-      {% image page.background_image width-400 as img %}
-      <img src="{{ img.url }}" alt="{{ img.alt }}"
-           class="img-fluid rounded shadow mb-2 float-md-end ms-md-4 mb-3"
-           style="max-width: 40%;">
+      {% image page.background_image width-800 as img %}
+      <img src="{{ img.url }}" alt="{{ img.alt|default_if_none:"Background Image" }}" class="img-fluid rounded shadow mb-2 float-md-end ms-md-4 mb-3" style="max-width: 40%;">
     {% endif %}
 
     <h1>{{ page.title }}</h1>
+
     <p class="text-muted mb-1">
-      Posted on {{ page.first_published_at|date:"F j, Y" }}<br>
-      Last updated on {{ page.last_published_at|date:"F j, Y, H:i" }}
+      {% if page.first_published_at %}
+        Posted on {{ page.first_published_at|date:"F j, Y" }}<br>
+      {% endif %}
+      {% if page.last_published_at %}
+        Last updated on {{ page.last_published_at|date:"F j, Y, H:i" }}
+      {% endif %}
     </p>
+
     {% if page.author %}
       <p class="fw-semibold text-muted">By {{ page.author }}</p>
     {% endif %}
+
     {% if page.rating %}
       <div class="rating-icons my-3">
         {{ page.rating|render_rating }}
@@ -28,12 +31,16 @@
     {% endif %}
   </div>
 
-  <!-- Body blocks -->
-  <div class="mt-4 clear-fix">
+  <!-- StreamField Blocks -->
+  <div class="mt-4 clearfix">
     {% for block in page.body %}
-      {{ block }}
+      {% include_block block %}
+    {% empty %}
+      <p>No content available.</p>
     {% endfor %}
   </div>
+{% endblock %}
 
-</section>
+{% block extra_js %}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-8tN2iKxpsrdy3umO8I+hJXr3o8/8ufHiCEq0kYF1dB1xJgJcfzovZ0UG1y1FqEEX" crossorigin="anonymous"></script>
 {% endblock %}
