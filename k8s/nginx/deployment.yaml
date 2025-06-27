@@ -17,26 +17,30 @@ spec:
     spec:
       containers:
         - name: nginx
-          image: nginx:latest # Or your custom Nginx image
+          image: nginx:latest
           ports:
             - containerPort: 80
           volumeMounts:
             - name: nginx-config-volume
               mountPath: /etc/nginx/nginx.conf
-              subPath: nginx.conf # Mounts only the file, not the directory
-            - name: staticfiles-storage # Mount the staticfiles PVC
-              mountPath: /vol/web/static # Must match STATIC_ROOT path from Wagtail
-              readOnly: true # Nginx only needs to read these
-            - name: media-storage # Mount the media PVC
-              mountPath: /vol/web/media # Must match MEDIA_ROOT path from Wagtail
-              readOnly: true # Nginx only needs to read these
-      volumes:
+              subPath: nginx.conf
+            - name: empty-dir
+              mountPath: /etc/nginx/conf.d/
+            - name: staticfiles-storage
+              mountPath: /vol/web/static
+              readOnly: true
+            - name: media-storage
+              mountPath: /vol/web/media
+              readOnly: true
+      volumes:  # <-- Moved here, outside of containers
         - name: nginx-config-volume
           configMap:
-            name: nginx-config # Your Nginx ConfigMap
+            name: nginx-config
+        - name: empty-dir
+          emptyDir: {}
         - name: staticfiles-storage
           persistentVolumeClaim:
-            claimName: wagtail-staticfiles # Reference the staticfiles PVC
+            claimName: wagtail-staticfiles
         - name: media-storage
           persistentVolumeClaim:
-            claimName: wagtail-media # Reference the media PVC
+            claimName: wagtail-media

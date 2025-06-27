@@ -16,7 +16,7 @@ spec:
     spec:
       initContainers:
         - name: migrate-and-collectstatic
-          image: kickb1/wagtail-site:v1.0
+          image: kickb1/wagtail-site:v2.0
           imagePullPolicy: Always
           env:
             - name: DATABASE_URL
@@ -26,11 +26,13 @@ spec:
             - name: SECRET_KEY
               value: "a-very-secret-key-you-must-change"
             - name: ALLOWED_HOSTS
-              value: "192.168.178.155,localhost,127.0.0.1"
+              value: "*"
+            # WAGTAILADMIN_BASE_URL and CSRF_TRUSTED_ORIGINS should reflect the Nginx's external URL
+            # as Nginx is the entry point for the public.
             - name: WAGTAILADMIN_BASE_URL
-              value: "http://192.168.178.155:30349"
+              value: "http://192.168.178.155:31527" # Changed to Nginx NodePort
             - name: CSRF_TRUSTED_ORIGINS
-              value: "http://192.168.178.155:30349,http://192.168.178.155"
+              value: "http://192.168.178.155:31527,http://192.168.178.155,http://127.0.0.1,http://localhost" # Added Nginx NodePort
           volumeMounts:
             - name: staticfiles-storage
               mountPath: /vol/web/static
@@ -42,7 +44,7 @@ spec:
 
       containers:
         - name: wagtail-web
-          image: kickb1/wagtail-site:v1.0
+          image: kickb1/wagtail-site:v2.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000
@@ -58,11 +60,13 @@ spec:
             - name: DJANGO_SETTINGS_MODULE
               value: blog.settings.production
             - name: ALLOWED_HOSTS
-              value: "192.168.178.155,localhost,127.0.0.1"
+              value: "*"
+            # WAGTAILADMIN_BASE_URL and CSRF_TRUSTED_ORIGINS should reflect the Nginx's external URL
+            # as Nginx is the entry point for the public.
             - name: WAGTAILADMIN_BASE_URL
-              value: "http://192.168.178.155:30349"
+              value: "http://192.168.178.155:31527" # Changed to Nginx NodePort
             - name: CSRF_TRUSTED_ORIGINS
-              value: "http://192.168.178.155:30349,http://192.168.178.155"
+              value: "http://192.168.178.155:31527,http://192.168.178.155,http://127.0.0.1,http://localhost" # Added Nginx NodePort
           volumeMounts:
             - name: staticfiles-storage
               mountPath: /vol/web/static

@@ -8,14 +8,15 @@ DEBUG = False
 # MEDIA_ROOT = os.environ.get('MEDIA_ROOT', '/vol/web/media')
 
 STATIC_ROOT = '/vol/web/static'
+STATIC_URL = '/static/'
 MEDIA_ROOT = '/vol/web/media'
-
+MEDIA_URL = '/media/'
 # Security settings
 SECRET_KEY = os.environ.get('SECRET_KEY', 'unsafe-temp-key-do-not-use-in-prod')
 
 # Default to empty, then build list
-allowed = os.environ.get('ALLOWED_HOSTS', '')
-ALLOWED_HOSTS = allowed.split(',') if allowed else []
+#allowed = os.environ.get('ALLOWED_HOSTS', '')
+ALLOWED_HOSTS = ['*']#allowed.split(',') if allowed else []
 
 # Always allow the local pod IPs, developer PC, and service access
 DEFAULT_ALLOWED = [
@@ -64,5 +65,52 @@ STORAGES = {
     },
     "staticfiles": {
         "BACKEND": "django.contrib.staticfiles.storage.ManifestStaticFilesStorage",
+    },
+}
+
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {name} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname}: {message}',
+            'style': '{',
+        },
+    },
+
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'wagtail_production.log'),
+            'formatter': 'verbose',
+        },
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+    },
+
+    'loggers': {
+        'django': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'wagtail': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        # Add more loggers here (e.g., 'myapp') if needed
     },
 }
