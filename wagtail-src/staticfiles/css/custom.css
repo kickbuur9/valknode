@@ -14,5 +14,5 @@
 }
 
 .card {
-  overflow: hidden; /* Important for absolute positioning if content goes outside bounds */
+  overflow: hidden;
 }

@@ -7,6 +7,33 @@ from wagtail.images.blocks import ImageChooserBlock
 from wagtail.images.models import Image
 from wagtailcodeblock.blocks import CodeBlock
 
+from wagtail.snippets.models import register_snippet
+
+@register_snippet
+class Quote(models.Model):
+    text = models.TextField(
+        verbose_name="Quote Text",
+        help_text="The actual quote."
+    )
+    author = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name="Author",
+        help_text="The author of the quote (optional)."
+    )
+
+    panels = [
+        FieldPanel('text'),
+        FieldPanel('author'),
+    ]
+
+    def __str__(self):
+        return f'"{self.text}" - {self.author if self.author else "Unknown"}'
+
+    class Meta:
+        verbose_name = "Quote"
+        verbose_name_plural = "Quotes"
 
 # Custom HeadingBlock with text and size (h2, h3, h4)
 class HeadingBlock(blocks.StructBlock):

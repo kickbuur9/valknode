@@ -1,1 +1,3 @@
-Ik heb geen idee meer Alex, doorgaan met debug aan?
+# Valknode
+## Valkyrie
+## Nodes in Kubectl

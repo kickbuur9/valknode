@@ -1,11 +1,27 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Page not found{% endblock %}
+
+{% block extra_head %}
+  <link rel="stylesheet" href="{% static 'css/404.css' %}">
+{% endblock %}
 
 {% block body_class %}template-404{% endblock %}
 
 {% block content %}
-<h1>Page not found</h1>
+  <div class="error-page">
+    <h1>Sorry, this page could not be found.</h1>
 
-<h2>Sorry, this page could not be found.</h2>
+    {% if quote %}
+      <div class="quotes">
+        <div class="quote-item">
+          <p class="quote-text">“{{ quote.text }}”</p>
+          {% if quote.author %}
+            <p class="quote-author">— {{ quote.author }}</p>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
 {% endblock %}

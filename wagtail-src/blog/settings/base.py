@@ -186,5 +186,9 @@ WAGTAILADMIN_BASE_URL = "http://192.168.178.155:31527"
 WAGTAILDOCS_EXTENSIONS = ['csv', 'docx', 'key', 'odt', 'pdf', 'pptx', 'rtf', 'txt', 'xlsx', 'zip']
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://192.168.178.155:31527",
+    'http://192.168.178.155',
+    'http://localhost',
+    'http://127.0.0.1',
+    'http://192.168.178.35',
+    'http://192.168.178.155:31527'
 ]

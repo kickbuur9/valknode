@@ -49,7 +49,8 @@ CSRF_TRUSTED_ORIGINS = [
     'http://192.168.178.155',
     'http://localhost',
     'http://127.0.0.1',
-    'http://192.168.178.35',  # or whatever IP you're using
+    'http://192.168.178.35',
+    'http://192.168.178.155:31527'
 ]
 
 # USE_X_FORWARDED_HOST = True
