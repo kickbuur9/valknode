@@ -20,10 +20,14 @@ spec:
           image: nginx:latest
           ports:
             - containerPort: 80
+            - containerPort: 443
           volumeMounts:
             - name: nginx-config-volume
               mountPath: /etc/nginx/nginx.conf
               subPath: nginx.conf
+            - name: tls-certs
+              mountPath: /etc/nginx/certs
+              readOnly: true
             - name: empty-dir
               mountPath: /etc/nginx/conf.d/
             - name: staticfiles-storage
@@ -32,10 +36,13 @@ spec:
             - name: media-storage
               mountPath: /vol/web/media
               readOnly: true
-      volumes:  # <-- Moved here, outside of containers
+      volumes:
         - name: nginx-config-volume
           configMap:
             name: nginx-config
+        - name: tls-certs
+          secret:
+            secretName: kickb-dev-tls
         - name: empty-dir
           emptyDir: {}
         - name: staticfiles-storage

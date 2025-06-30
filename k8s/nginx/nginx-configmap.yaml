@@ -25,9 +25,25 @@ data:
             server wagtail-service:80;
         }
 
+        # Redirect HTTP to HTTPS
         server {
             listen 80;
             server_name kickb.dev;
+
+            return 301 https://$host$request_uri;
+        }
+
+        # HTTPS server
+        server {
+            listen 443 ssl;
+            server_name kickb.dev;
+
+            ssl_certificate /etc/nginx/certs/tls.crt;
+            ssl_certificate_key /etc/nginx/certs/tls.key;
+
+            ssl_protocols TLSv1.2 TLSv1.3;
+            ssl_ciphers HIGH:!aNULL:!MD5;
+            ssl_prefer_server_ciphers on;
 
             location /static/ {
                 alias /vol/web/static/;
