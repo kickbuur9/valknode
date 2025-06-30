@@ -22,12 +22,12 @@ data:
         keepalive_timeout  65;
 
         upstream wagtail_upstream {
-            server wagtail-service:80;
+            server wagtail-service:80;  # The Kubernetes service port
         }
 
         server {
             listen 80;
-            server_name kickb.dev;
+            server_name _;
 
             location /static/ {
                 alias /vol/web/static/;
