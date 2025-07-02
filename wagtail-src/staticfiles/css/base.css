@@ -36,11 +36,11 @@ body {
     transition: transform 0.2s ease;
 }
 
-/* .latest-posts .card {
+.latest-posts .card {
     border: 1px solid #ff0000;
     border-radius: 8px;
     transition: transform 0.2s ease;
-} */
+}
 
 .latest-posts .card:hover {
     transform: translateY(-5px);

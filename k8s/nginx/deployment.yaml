@@ -28,14 +28,15 @@ spec:
             - name: tls-certs
               mountPath: /etc/nginx/certs
               readOnly: true
-            - name: empty-dir
-              mountPath: /etc/nginx/conf.d/
             - name: staticfiles-storage
               mountPath: /vol/web/static
               readOnly: true
             - name: media-storage
               mountPath: /vol/web/media
-              readOnly: true
+              readOnly: false
+            - name: nginx-cache-volume
+              mountPath: /var/cache/nginx
+
       volumes:
         - name: nginx-config-volume
           configMap:
@@ -43,11 +44,11 @@ spec:
         - name: tls-certs
           secret:
             secretName: kickb-dev-tls
-        - name: empty-dir
-          emptyDir: {}
         - name: staticfiles-storage
           persistentVolumeClaim:
             claimName: wagtail-staticfiles
         - name: media-storage
           persistentVolumeClaim:
             claimName: wagtail-media
+        - name: nginx-cache-volume
+          emptyDir: {}

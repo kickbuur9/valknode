@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   name: kickb-dev-ingress
   annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure,web
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
     traefik.ingress.kubernetes.io/router.tls: "true"
 spec:
   tls:
@@ -18,6 +18,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: wagtail-service
+            name: nginx-service
             port:
               number: 80

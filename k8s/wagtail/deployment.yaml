@@ -16,7 +16,7 @@ spec:
     spec:
       initContainers:
         - name: migrate-and-collectstatic
-          image: kickb1/wagtail-site:v1.3
+          image: kickb1/wagtail-site:v2.0
           imagePullPolicy: Always
           env:
             - name: DATABASE_URL
@@ -27,12 +27,10 @@ spec:
               value: "a-very-secret-key-you-must-change"
             - name: ALLOWED_HOSTS
               value: "*"
-            # WAGTAILADMIN_BASE_URL and CSRF_TRUSTED_ORIGINS should reflect the Nginx's external URL
-            # as Nginx is the entry point for the public.
             - name: WAGTAILADMIN_BASE_URL
-              value: "http://192.168.178.155:31527" # Changed to Nginx NodePort
+              value: "http://192.168.178.155:31527"
             - name: CSRF_TRUSTED_ORIGINS
-              value: "http://192.168.178.155:31527,http://192.168.178.155,http://127.0.0.1,http://localhost" # Added Nginx NodePort
+              value: "http://192.168.178.155:31527,http://192.168.178.155,http://127.0.0.1,http://localhost"
           volumeMounts:
             - name: staticfiles-storage
               mountPath: /vol/web/static
@@ -44,7 +42,7 @@ spec:
 
       containers:
         - name: wagtail-web
-          image: kickb1/wagtail-site:v1.3
+          image: kickb1/wagtail-site:v2.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000
@@ -61,15 +59,12 @@ spec:
               value: blog.settings.production
             - name: ALLOWED_HOSTS
               value: "*"
-            # WAGTAILADMIN_BASE_URL and CSRF_TRUSTED_ORIGINS should reflect the Nginx's external URL
-            # as Nginx is the entry point for the public.
             - name: WAGTAILADMIN_BASE_URL
-              value: "http://192.168.178.155:31527" # Changed to Nginx NodePort
+              value: "http://192.168.178.155:31527"
             - name: CSRF_TRUSTED_ORIGINS
-              value: "http://192.168.178.155:31527,http://192.168.178.155,http://127.0.0.1,http://localhost" # Added Nginx NodePort
+              value: "http://192.168.178.155:31527,http://192.168.178.155,http://127.0.0.1,http://localhost"
           volumeMounts:
-            - name: staticfiles-storage
-              mountPath: /vol/web/static
+            # Only media volume is mounted in the app container, static is served by Nginx
             - name: media-storage
               mountPath: /vol/web/media
           resources:
