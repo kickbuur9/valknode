@@ -3,10 +3,6 @@ from .base import *
 
 DEBUG = False
 
-# Static and media file roots (used by Docker image build and runtime)
-# STATIC_ROOT = os.environ.get('STATIC_ROOT', '/vol/web/static')
-# MEDIA_ROOT = os.environ.get('MEDIA_ROOT', '/vol/web/media')
-
 STATIC_ROOT = '/vol/web/static'
 STATIC_URL = '/static/'
 MEDIA_ROOT = '/vol/web/media'
@@ -14,14 +10,11 @@ MEDIA_URL = '/media/'
 # Security settings
 SECRET_KEY = os.environ.get('SECRET_KEY', 'unsafe-temp-key-do-not-use-in-prod')
 
-# Default to empty, then build list
-#allowed = os.environ.get('ALLOWED_HOSTS', '')
-ALLOWED_HOSTS = ['*']#allowed.split(',') if allowed else []
+ALLOWED_HOSTS = ['*']
 
-# Always allow the local pod IPs, developer PC, and service access
 DEFAULT_ALLOWED = [
-    "192.168.178.155",  # k3s server (pod host)
-    "192.168.178.35",   # your machine
+    "192.168.178.155",
+    "192.168.178.35",
     "localhost",
     "127.0.0.1",
 ]
@@ -42,10 +35,13 @@ DATABASES = {
     )
 }
 
-# CSRF trusted origins
-#CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',')
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 CSRF_TRUSTED_ORIGINS = [
+    'https://kickb.dev',
     'http://192.168.178.155',
     'http://localhost',
     'http://127.0.0.1',

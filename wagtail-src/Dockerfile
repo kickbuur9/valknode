@@ -9,17 +9,15 @@ EXPOSE 8000
 RUN mkdir -p /app/blog/logs && chown -R wagtail:wagtail /app/blog/logs
 
 # Build arguments
-ARG DJANGO_SECRET_KEY_BUILD
-ARG DJANGO_ALLOWED_HOSTS_BUILD
+# ARG DJANGO_SECRET_KEY_BUILD
+# ARG DJANGO_ALLOWED_HOSTS_BUILD
 
 # Environment configuration
 ENV PYTHONUNBUFFERED=1 \
     PORT=8000 \
     DJANGO_SETTINGS_MODULE=blog.settings.production \
     STATIC_ROOT=/vol/web/static \
-    MEDIA_ROOT=/vol/web/media \
-    SECRET_KEY=${DJANGO_SECRET_KEY_BUILD:-temp-secret-key-do-not-use} \
-    ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS_BUILD:-192.168.178.155,192.168.178.35,localhost,127.0.0.1,*}
+    MEDIA_ROOT=/vol/web/media
 
 # Install system dependencies
 RUN apt-get update --yes --quiet && apt-get install --yes --quiet --no-install-recommends \
