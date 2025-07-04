@@ -2,6 +2,7 @@
 {% load wagtailcore_tags wagtailimages_tags rating_tags static %}
 
 {% block content %}
+<div class="container">
   <div class="mb-4">
 
     {% if page.background_image %}
@@ -39,6 +40,7 @@
       <p>No content available.</p>
     {% endfor %}
   </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}

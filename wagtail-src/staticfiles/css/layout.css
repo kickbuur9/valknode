@@ -1,0 +1,49 @@
+/* Layout container */
+.container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 1rem; /* adds spacing left/right */
+}
+
+/* Applies container to the body content */
+body > header,
+body > main,
+body > footer {
+    display: block;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+/* Ensure images do not overflow container */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Adds margin to headings and paragraphs */
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+p {
+    margin-bottom: 1rem;
+}
+
+/* Space between cards */
+.latest-posts .card {
+    margin-bottom: 1.5rem;
+}
+
+/* Optional: space for streamfield blocks */
+.stream-block {
+    margin-bottom: 2rem;
+}
+
+/* Responsiveness for smaller screens */
+@media (max-width: 576px) {
+    .container {
+        padding: 0 0.75rem;
+    }
+}

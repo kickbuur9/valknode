@@ -16,7 +16,7 @@ spec:
     spec:
       initContainers:
         - name: migrate-and-collectstatic
-          image: kickb1/wagtail-site:v4.0
+          image: kickb1/wagtail-site:v1.2
           imagePullPolicy: Always
           env:
             - name: DATABASE_URL
@@ -26,12 +26,16 @@ spec:
             - name: SECRET_KEY
               value: "a-very-secret-key-you-must-change"
             - name: ALLOWED_HOSTS
-              value: "*"
-              #value: "kickb.dev,213.73.188.84,192.168.178.35,localhost,127.0.0.1"
+              value: "kickb.dev,213.73.188.84"
             - name: WAGTAILADMIN_BASE_URL
               value: "https://kickb.dev"
             - name: CSRF_TRUSTED_ORIGINS
-              value: "https://kickb.dev,http://213.73.188.84,http://192.168.178.35,http://127.0.0.1,http://localhost"
+              value: |
+                https://kickb.dev,
+                http://213.73.188.84,
+                http://192.168.178.35,
+                http://127.0.0.1,
+                http://localhost
           volumeMounts:
             - name: staticfiles-storage
               mountPath: /vol/web/static
@@ -43,7 +47,7 @@ spec:
 
       containers:
         - name: wagtail-web
-          image: kickb1/wagtail-site:v4.0
+          image: kickb1/wagtail-site:v1.2
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000
@@ -59,12 +63,17 @@ spec:
             - name: DJANGO_SETTINGS_MODULE
               value: blog.settings.production
             - name: ALLOWED_HOSTS
-              value: "*"
+              value: "kickb.dev,213.73.188.84"
               #value: "kickb.dev,213.73.188.84,192.168.178.35,localhost,127.0.0.1"
             - name: WAGTAILADMIN_BASE_URL
               value: "https://kickb.dev"
             - name: CSRF_TRUSTED_ORIGINS
-              value: "https://kickb.dev,http://213.73.188.84,http://192.168.178.35,http://127.0.0.1,http://localhost"
+              value: |
+                https://kickb.dev,
+                http://213.73.188.84,
+                http://192.168.178.35,
+                http://127.0.0.1,
+                http://localhost
           volumeMounts:
             - name: media-storage
               mountPath: /vol/web/media
