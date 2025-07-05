@@ -36,6 +36,18 @@ data:
             ssl_ciphers HIGH:!aNULL:!MD5;
             ssl_prefer_server_ciphers on;
 
+            location = /robots.txt {
+                alias /vol/web/static/robots.txt;
+            }
+
+            location = /.well-known/security.txt {
+                alias /vol/web/static/well-known/security.txt;
+            }
+
+            location ^~ /.well-known/ {
+                return 302 /.well-known/security.txt;
+            }
+
             location ^~ /static/ {
                 alias /vol/web/static/;
                 expires 30d;

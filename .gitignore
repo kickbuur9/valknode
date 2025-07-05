@@ -1,4 +1,6 @@
 *.log
 .venv
 *elastic-credentials.yaml
+*postgres-credentials.yaml
+*wagtail-credentials.yaml
 certificates/*

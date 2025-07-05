@@ -1,4 +1,3 @@
-# home/views.py
 from django.shortcuts import render
 from .models import Quote
 import random
