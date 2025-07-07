@@ -35,7 +35,6 @@ class Quote(models.Model):
         verbose_name = "Quote"
         verbose_name_plural = "Quotes"
 
-# Custom HeadingBlock with text and size (h2, h3, h4)
 class HeadingBlock(blocks.StructBlock):
     text = blocks.CharBlock(required=True, help_text="Text for the heading")
     size = blocks.ChoiceBlock(
@@ -50,10 +49,9 @@ class HeadingBlock(blocks.StructBlock):
     )
 
     class Meta:
-        template = 'blocks/heading_block.html'  # This template should add id="{{ text|slugify }}"
+        template = 'blocks/heading_block.html'
         icon = 'title'
         label = 'Heading'
-
 
 class CertificateBlock(blocks.StructBlock):
     title = blocks.CharBlock(required=True)
@@ -63,7 +61,6 @@ class CertificateBlock(blocks.StructBlock):
     class Meta:
         icon = "doc-full"
         label = "Certificate"
-
 
 class AboutMePage(Page):
     intro = RichTextField(blank=True)
@@ -88,7 +85,6 @@ class AboutMePage(Page):
         FieldPanel('highlights'),
     ]
 
-
 class HomePage(Page):
     def get_context(self, request):
         context = super().get_context(request)
@@ -100,7 +96,6 @@ class HomePage(Page):
         )
         context['latest_posts'] = [p.specific for p in latest_posts]
         return context
-
 
 class WriteupPage(Page):
     intro = RichTextField(blank=True)
@@ -143,12 +138,19 @@ class WriteupItemPage(Page):
         related_name='+'
     )
 
+    youtube_url = models.URLField(
+        blank=True,
+        null=True,
+        help_text="Optional link to a YouTube video"
+    )
+
     content_panels = Page.content_panels + [
         FieldPanel('summary'),
         FieldPanel('author'),
         FieldPanel('rating'),
         FieldPanel('background_image'),
         FieldPanel('body'),
+        FieldPanel('youtube_url'),
     ]
 
     parent_page_types = ['WriteupPage']

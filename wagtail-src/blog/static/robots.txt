@@ -1,4 +1,6 @@
 User-agent: *
 Disallow: /admin/
 Disallow: /static/
+Disallow: /django-admin/
+Disallow: /docs
 Allow: /
