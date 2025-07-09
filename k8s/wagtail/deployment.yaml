@@ -16,7 +16,7 @@ spec:
     spec:
       initContainers:
         - name: migrate-and-collectstatic
-          image: kickb1/wagtail-site:v1.2
+          image: kickb1/wagtail-site:v1.0
           imagePullPolicy: Always
           env:
             - name: DATABASE_URL
@@ -47,10 +47,11 @@ spec:
           command: ["sh", "-c"]
           args:
             - "python manage.py migrate --noinput && python manage.py collectstatic --noinput --clear"
+            
 
       containers:
         - name: wagtail-web
-          image: kickb1/wagtail-site:v1.2
+          image: kickb1/wagtail-site:v1.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000
