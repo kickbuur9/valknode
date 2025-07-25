@@ -1,8 +1,9 @@
-# kibana-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: kibana
+  labels:
+    app: kibana
 spec:
   replicas: 1
   selector:
@@ -15,21 +16,36 @@ spec:
     spec:
       containers:
       - name: kibana
-        image: elastic/kibana:9.0.3
+        image: docker.elastic.co/kibana/kibana:8.14.0
         ports:
         - containerPort: 5601
+          name: http
         env:
-        - name: ELASTICSEARCH_HOSTS
-          value: "http://elasticsearch:9200"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: kibana
-spec:
-  selector:
-    app: kibana
-  ports:
-  - protocol: TCP
-    port: 5601
-    targetPort: 5601
+        # Pass the service account token as an environment variable
+        - name: ELASTICSEARCH_SERVICEACCOUNTTOKEN
+          value: "AAEAAWVsYXN0aWMva2liYW5hL2tpYmFuYS10b2tlbjpiMm1MbXdBUlRJS2laWWx3MVMtZkZR" # Your new token!
+        volumeMounts:
+        # Mount the secret containing CA, Elasticsearch cert, and key.
+        # Kibana will use es.crt/es.key for its own server SSL and ca.crt to trust Elasticsearch.
+        - name: certs
+          mountPath: /usr/share/kibana/config/certs
+          readOnly: true
+        # Mount the kibana.yml ConfigMap
+        - name: kibana-config
+          mountPath: /usr/share/kibana/config/kibana.yml
+          subPath: kibana.yml
+          readOnly: true
+      volumes:
+      - name: certs
+        secret:
+          secretName: elasticsearch-cert # This secret must contain tls.crt, tls.key, and ca.crt
+          items:
+          - key: tls.crt
+            path: es.crt # Kibana will use this for its server.ssl.certificate
+          - key: tls.key
+            path: es.key # Kibana will use this for its server.ssl.key
+          - key: ca.crt
+            path: ca.crt # Kibana will use this for elasticsearch.ssl.certificateAuthorities
+      - name: kibana-config
+        configMap:
+          name: kibana-config

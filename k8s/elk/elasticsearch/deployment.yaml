@@ -1,8 +1,9 @@
-# elasticsearch-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: elasticsearch
+  labels:
+    app: elasticsearch
 spec:
   replicas: 1
   selector:
@@ -15,29 +16,48 @@ spec:
     spec:
       containers:
       - name: elasticsearch
-        image: elastic/elasticsearch:9.0.3
+        image: docker.elastic.co/elasticsearch/elasticsearch:8.14.0
         ports:
         - containerPort: 9200
+          name: http
+        - containerPort: 9300
+          name: transport
         env:
-        - name: discovery.type
-          value: single-node
+        - name: ELASTIC_PASSWORD
+          value: "changeme" # IMPORTANT: Change this to a strong password in production!
         - name: ES_JAVA_OPTS
-          value: "-Xms512m -Xmx512m"
+          value: "-Xms512m -Xmx512m" # Adjust memory allocation as needed
+        - name: xpack.security.enabled
+          value: "true"
+        - name: xpack.security.http.ssl.enabled
+          value: "true"
+        - name: discovery.type
+          value: "single-node" # For single-node deployment
+        # Removed: cluster.initial_master_nodes as it conflicts with single-node discovery
         volumeMounts:
         - name: es-data
           mountPath: /usr/share/elasticsearch/data
+        - name: certs
+          mountPath: /usr/share/elasticsearch/config/certs
+          readOnly: true
+        - name: es-config
+          mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+          subPath: elasticsearch.yml
+          readOnly: true
       volumes:
       - name: es-data
-        emptyDir: {}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: elasticsearch
-spec:
-  selector:
-    app: elasticsearch
-  ports:
-  - protocol: TCP
-    port: 9200
-    targetPort: 9200
+        persistentVolumeClaim:
+          claimName: es-pvc
+      - name: certs
+        secret:
+          secretName: elasticsearch-cert # This secret must contain tls.crt, tls.key, and ca.crt
+          items:
+          - key: tls.crt
+            path: es.crt
+          - key: tls.key
+            path: es.key
+          - key: ca.crt
+            path: ca.crt # Mount the CA cert here for Elasticsearch to trust itself
+      - name: es-config
+        configMap:
+          name: elasticsearch-config

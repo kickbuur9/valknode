@@ -3,7 +3,7 @@
 
 {% block content %}
 <section class="container my-5">
-  <h2 class="mb-4">Writeups</h2>
+  <h2 class="mb-4">{{ page.title }}</h2>
   <div class="row">
     {% for child in page.get_children.live %}
     {% with child.specific as writeup %}

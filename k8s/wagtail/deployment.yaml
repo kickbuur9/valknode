@@ -16,7 +16,7 @@ spec:
     spec:
       initContainers:
         - name: migrate-and-collectstatic
-          image: kickb1/wagtail-site:v1.0
+          image: kickb1/wagtail-site:v0.9
           imagePullPolicy: Always
           env:
             - name: DATABASE_URL
@@ -51,7 +51,7 @@ spec:
 
       containers:
         - name: wagtail-web
-          image: kickb1/wagtail-site:v1.0
+          image: kickb1/wagtail-site:v0.9
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000

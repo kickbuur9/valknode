@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: elasticsearch-config
+  labels:
+    app: elasticsearch
+data:
+  elasticsearch.yml: |
+    # Cluster settings
+    cluster.name: "docker-cluster"
+    network.host: 0.0.0.0
+    discovery.type: single-node
+    # Removed: cluster.initial_master_nodes as it conflicts with single-node discovery
+
+    # X-Pack Security settings
+    xpack.security.enabled: true
+
+    # Transport layer SSL/TLS (for inter-node communication and client connections)
+    xpack.security.transport.ssl.enabled: true
+    xpack.security.transport.ssl.verification_mode: certificate
+    xpack.security.transport.ssl.key: certs/es.key
+    xpack.security.transport.ssl.certificate: certs/es.crt
+    xpack.security.transport.ssl.certificate_authorities: [ "certs/ca.crt" ]
+
+    # HTTP layer SSL/TLS (for REST API access)
+    xpack.security.http.ssl.enabled: true
+    xpack.security.http.ssl.key: certs/es.key
+    xpack.security.http.ssl.certificate: certs/es.crt
+    xpack.security.http.ssl.certificate_authorities: [ "certs/ca.crt" ]
+    xpack.security.http.ssl.verification_mode: certificate # Set to 'certificate' for strict verification, 'full' for hostname verification

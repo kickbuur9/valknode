@@ -1,18 +1,18 @@
-.rating-icons {
-  position: absolute; /* This is key: takes it out of flow, doesn't affect background layout */
+/* .rating-icons {
+  position: absolute;
   bottom: 0.75rem;
   right: 1rem;
-  background: rgba(0, 0, 0, 0.6); /* This is the rating's background, not the card's */
+  background: rgba(0, 0, 0, 0.6);
   padding: 0.25rem 0.5rem;
   border-radius: 0.5rem;
   font-size: 1rem;
   color: #ffc107;
   display: flex;
   gap: 0.15rem;
-  pointer-events: none; /* Allows clicks through to the stretched-link */
-  z-index: 2; /* Ensures it's above other card content if needed */
+  pointer-events: none;
+  z-index: 2;
 }
 
 .card {
   overflow: hidden;
-}
+} */

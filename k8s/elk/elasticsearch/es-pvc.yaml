@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: es-pvc
+  labels:
+    app: elasticsearch
+spec:
+  accessModes:
+    - ReadWriteOnce # This ensures the volume can be mounted as read-write by a single node
+  resources:
+    requests:
+      storage: 2Gi # Request 2 GiB of storage
