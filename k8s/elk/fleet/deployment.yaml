@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: fleet-server
+  labels:
+    app: fleet-server
 spec:
   replicas: 1
   selector:
@@ -14,34 +16,41 @@ spec:
     spec:
       containers:
       - name: fleet-server
-        image: docker.elastic.co/beats/elastic-agent:8.14.0
-        env:
-        - name: FLEET_ENROLL
-          value: "1"
-        - name: FLEET_SERVER_ENABLE
-          value: "1"
-        - name: FLEET_SERVER_ELASTICSEARCH_HOST
-          value: "https://elasticsearch:9200"
-        - name: FLEET_SERVER_ELASTICSEARCH_CA
-          value: "/etc/ssl/certs/tls.crt"
-        - name: FLEET_SERVER_SERVICE_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name: fleet-server-token
-              key: token
-        - name: KIBANA_FLEET_HOST
-          value: "https://kibana:5601"
-        - name: FLEET_URL
-          value: "https://kickb.dev:8220"
-        - name: FLEET_CA
-          value: "/etc/ssl/certs/tls.crt"
+        image: docker.elastic.co/elastic-agent/elastic-agent:8.14.0
+        args: ["run", "-c", "/etc/elastic-agent/fleet.yml"]  # <- This is the key fix
         ports:
         - containerPort: 8220
+          name: https-agents
+        - containerPort: 8221
+          name: https-internal
+        env:
+        - name: FLEET_ENROLLMENT_TOKEN
+          value: "N2xHTFFKZ0JYdVVfZllLczZZdEU6RS1uS1djWFhTRTZpNkN4ckdubVQyUQ=="
+        - name: FLEET_SERVER_TOKEN
+          value: "AAEAAWVsYXN0aWMvZmxlZXQtc2VydmVyL2ZsZWV0LXRva2VuOmRtd0s2dE5pUnF1YVNSbHN5Z3ozdUE"
         volumeMounts:
-        - name: tls-cert
-          mountPath: /etc/ssl/certs
+        - name: certs
+          mountPath: /etc/elastic-agent/certs
           readOnly: true
+        - name: fleet-server-config
+          mountPath: /etc/elastic-agent/fleet.yml
+          subPath: fleet.yml
+          readOnly: true
+        - name: fleet-server-data
+          mountPath: /usr/share/elastic-agent/data
       volumes:
-      - name: tls-cert
+      - name: certs
         secret:
-          secretName: kickb-cert
+          secretName: fleet-server-cert
+          items:
+          - key: tls.crt
+            path: fleet-server.crt
+          - key: tls.key
+            path: fleet-server.key
+          - key: ca.crt
+            path: ca.crt
+      - name: fleet-server-config
+        configMap:
+          name: fleet-server-config
+      - name: fleet-server-data
+        emptyDir: {}

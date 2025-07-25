@@ -2,10 +2,15 @@ apiVersion: v1
 kind: Service
 metadata:
   name: fleet-server
+  labels:
+    app: fleet-server
 spec:
   selector:
     app: fleet-server
   ports:
-    - port: 8220
+    - port: 8220 # Default Fleet Server port for agent communication
       targetPort: 8220
-      protocol: TCP
+      name: https-agents
+    - port: 8221 # Default Fleet Server port for internal communication (e.g., health checks)
+      targetPort: 8221
+      name: https-internal
