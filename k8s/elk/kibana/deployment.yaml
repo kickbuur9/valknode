@@ -23,7 +23,7 @@ spec:
         env:
         # Pass the service account token as an environment variable
         - name: ELASTICSEARCH_SERVICEACCOUNTTOKEN
-          value: "AAEAAWVsYXN0aWMva2liYW5hL2tpYmFuYS10b2tlbjpiMm1MbXdBUlRJS2laWWx3MVMtZkZR" # Your new token!
+          value: "AAEAAWVsYXN0aWMva2liYW5hL2tpYmFuYS10b2tlbjpOZ3RTQVZiZVRnMksyT3pyX05zaEpn" # Your new token!
         volumeMounts:
         # Mount the secret containing CA, Elasticsearch cert, and key.
         # Kibana will use es.crt/es.key for its own server SSL and ca.crt to trust Elasticsearch.
