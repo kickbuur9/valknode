@@ -7,28 +7,39 @@ metadata:
 data:
   kibana.yml: |
     # Kibana server settings
-    server.host: "0.0.0.0" # Listen on all network interfaces
+    # Binds Kibana to all network interfaces within the container.
+    server.host: "0.0.0.0"
+    # The port Kibana listens on.
     server.port: 5601
 
+    server.publicBaseUrl: "https://kibana.kickb.dev:5601"
+
     # Kibana UI SSL settings
+    # Enables HTTPS for the Kibana UI.
     server.ssl.enabled: true
-    # These paths point to the certificate and key mounted from the 'elasticsearch-cert' secret.
-    # We are reusing es.crt and es.key for Kibana's server SSL.
-    server.ssl.certificate: /usr/share/kibana/config/certs/es.crt
-    server.ssl.key: /usr/share/kibana/config/certs/es.key
+    # Path to Kibana's SSL certificate (your domain.cert.pem).
+    server.ssl.certificate: /usr/share/kibana/config/certs/domain.cert.pem
+    # Path to Kibana's SSL private key (your private.key.pem).
+    server.ssl.key: /usr/share/kibana/config/certs/private.key.pem
 
     # Elasticsearch connection settings
-    elasticsearch.hosts: ["https://elasticsearch:9200"] # Connect to Elasticsearch via HTTPS
-    # This tells Kibana to trust the CA that signed Elasticsearch's certificate.
-    elasticsearch.ssl.certificateAuthorities: ["/usr/share/kibana/config/certs/ca.crt"]
-    # Verify the hostname of the Elasticsearch certificate. 'full' is recommended.
-    # If your es.crt does not have 'elasticsearch' as a SAN, you might need 'certificate' or 'none'.
-    elasticsearch.ssl.verificationMode: full
+    # The list of Elasticsearch hosts Kibana should connect to.
+    # 'elasticsearch' is the Kubernetes service name for your Elasticsearch deployment.
+    elasticsearch.hosts: ["https://elasticsearch:9200"]
+    # Path to the certificate that Kibana should use to trust Elasticsearch.
+    # Since you don't have a separate ca.crt, we use the same domain.cert.pem
+    # that Elasticsearch is serving, assuming it contains the necessary trust chain.
+    elasticsearch.ssl.certificateAuthorities: ["/usr/share/kibana/config/certs/domain.cert.pem"]
+    # Sets the SSL verification mode to 'full', meaning Kibana will verify
+    # both the certificate chain and the hostname.
+    elasticsearch.ssl.verificationMode: none #certificate
 
-    # Authentication for Kibana to Elasticsearch using the service account token.
+    # Authentication via service account token
+    # Kibana uses this token to authenticate with Elasticsearch.
     elasticsearch.serviceAccountToken: ${ELASTICSEARCH_SERVICEACCOUNTTOKEN}
 
-    # X-Pack encryption keys (important for production)
-    # Ensure these are strong, unique, and kept secret.
-    xpack.encryptedSavedObjects.encryptionKey: "bca7e38a7c9f41eaa44e134bb326ebf1" # Must be 32+ characters, unique
-    xpack.reporting.encryptionKey: "2bf9f33c94cb46d7ae8fc0f7ef3b2a55" # Must be 32+ characters, unique
+    # X-Pack encryption keys for saved objects and reporting.
+    # These should ideally be generated and managed securely (e.g., via Kubernetes secrets)
+    # in a production environment.
+    xpack.encryptedSavedObjects.encryptionKey: "bca7e38a7c9f41eaa44e134bb326ebf1"
+    xpack.reporting.encryptionKey: "2bf9f33c94cb46d7ae8fc0f7ef3b2a55"

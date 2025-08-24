@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: heartbeat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: heartbeat
+  template:
+    metadata:
+      labels:
+        app: heartbeat
+    spec:
+      containers:
+      - name: heartbeat
+        image: docker.elastic.co/beats/heartbeat:9.1.0
+        volumeMounts:
+        - name: config-volume
+          mountPath: /usr/share/heartbeat/heartbeat.yml
+          subPath: heartbeat.yml
+        - name: certs
+          mountPath: /mnt/certs
+          readOnly: true
+        env:
+        - name: ELASTIC_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: elastic-credentials
+              key: password
+      volumes:
+      - name: config-volume
+        configMap:
+          name: heartbeat-config
+          items:
+          - key: heartbeat.yml
+            path: heartbeat.yml
+      - name: certs
+        secret:
+          secretName: elasticsearch-cert
+          items:
+          - key: tls.crt
+            path: ca.crt
+

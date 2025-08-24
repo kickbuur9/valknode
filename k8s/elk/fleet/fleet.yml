@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fleet-server-config
+  labels:
+    app: fleet-server
+data:
+  fleet.yml: |
+    # Fleet Server settings
+    # The host and port where Fleet Server listens for incoming agent connections.
+    # This should match the service name for agents to connect.
+    server.host: "0.0.0.0"
+    server.port: 8220
+
+    # SSL settings for Fleet Server (for agents to connect securely)
+    # Fleet Server will use the same certificate as Elasticsearch and Kibana.
+    server.ssl.enabled: true
+    server.ssl.certificate: /etc/elastic-agent/certs/domain.cert.pem
+    server.ssl.key: /etc/elastic-agent/certs/private.key.pem
+    # Agents will need to trust the CA that signed this certificate.
+    # We will provide the CA cert (which is domain.cert.pem) to the agents.
+
+    # Connection to Kibana
+    fleet.kibana.host: "https://kibana.kickb.dev:5601" # Connect to Kibana via HTTPS
+    # Use the same domain.cert.pem as the certificate authority for Kibana's SSL.
+    fleet.kibana.ssl.certificate_authorities: ["/etc/elastic-agent/certs/domain.cert.pem"]
+    fleet.kibana.ssl.verification_mode: full # Verify Kibana's certificate and hostname
+
+    # Connection to Elasticsearch
+    fleet.elasticsearch.hosts: ["https://elasticsearch.kickb.dev:9200"] # Connect to Elasticsearch via HTTPS
+    # Use the same domain.cert.pem as the certificate authority for Elasticsearch's SSL.
+    fleet.elasticsearch.ssl.certificate_authorities: ["/etc/elastic-agent/certs/domain.cert.pem"]
+    fleet.elasticsearch.ssl.verification_mode: full # Verify Elasticsearch's certificate and hostname
+
+    # Authentication to Elasticsearch using the service account token
+    # This token needs to be generated in Elasticsearch and provided securely.
+    fleet.elasticsearch.service_account_token: ${FLEET_SERVER_TOKEN}
+
+    # Data path for Elastic Agent (where it stores policies, logs, etc.)
+    path.data: /usr/share/elastic-agent/data
