@@ -4,4 +4,4 @@
 *postgres-credentials.yaml
 *wagtail-credentials.yaml
 certificates/*
-certs/*
+k8s/elk/certs/*
