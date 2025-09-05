@@ -24,7 +24,7 @@ spec:
             # This service account token is used by Kibana to authenticate with Elasticsearch.
             # It should be generated within Elasticsearch and kept secure.
             - name: ELASTICSEARCH_SERVICEACCOUNTTOKEN
-              value: "AAEAAWVsYXN0aWMva2liYW5hL2tpYmFuYS10b2tlbjpjOThSblgwN1MtQ1V3ZVFqOEstZHB3"
+              value: "AAEAAWVsYXN0aWMva2liYW5hL2tpYmFuYS10b2tlbjpETDRhclFXRlNoQ1ZDZFU4b0p2Zy1B"
           volumeMounts:
             # Mount the certificates for Kibana's own SSL and for connecting to Elasticsearch
             - name: certs
