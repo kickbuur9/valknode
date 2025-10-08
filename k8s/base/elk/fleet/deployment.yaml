@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleet-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: fleet-server
+  template:
+    metadata:
+      labels:
+        component: fleet-server
+    spec:
+      containers:
+      - name: fleet-server
+        image: docker.elastic.co/elastic-agent/elastic-agent:9.1.3
+        env:
+        # Elasticsearch service token
+        - name: FLEET_SERVER_SERVICE_TOKEN
+          value: "AAEAAWVsYXN0aWMvZmxlZXQtc2VydmVyL2ZsZWV0LXNlcnZlci10b2tlbjpTNDB0THpXSlNseV9wazNFdWpHRlZB"
+
+        # Enrollment token
+        - name: FLEET_ENROLLMENT_TOKEN
+          value: "UWpOZE9aa0JjaEFaNjdJTVZJR1c6TXJXXzRETlJWWFEweG9ocy1VLWlWZw=="
+
+        # Fleet Server mode
+        - name: FLEET_SERVER_ENABLE
+          value: "1"
+
+        # Fleet Server listens on plain HTTP internally
+        - name: FLEET_SERVER_HOST
+          value: "0.0.0.0"
+        - name: FLEET_SERVER_PORT
+          value: "8220"
+
+        # Connect to Elasticsearch securely
+        - name: FLEET_SERVER_ELASTICSEARCH_HOST
+          value: "https://elasticsearch:9200"
+        - name: FLEET_SERVER_ELASTICSEARCH_CA
+          value: "/usr/share/fleet-server/config/certs/ca.crt"
+
+        # Connect to Kibana securely
+        - name: KIBANA_HOST
+          value: "https://kibana.kickb.dev"
+        - name: KIBANA_CA
+          value: "/usr/share/fleet-server/config/certs/ca.crt"
+
+        # Force full verification for Elastic Agent
+        - name: ELASTIC_AGENT_CERTIFICATE_AUTHORITIES
+          value: "/usr/share/fleet-server/config/certs/ca.crt"
+        - name: ELASTIC_AGENT_USE_HTTPS
+          value: "true"
+
+        volumeMounts:
+        - name: fs-certs
+          mountPath: /usr/share/fleet-server/config/certs
+          readOnly: true
+        - name: fleet-config
+          mountPath: /usr/share/fleet-server/config/fleet.yml
+          subPath: fleet.yml
+
+      volumes:
+      - name: fs-certs
+        secret:
+          secretName: es-certs
+      - name: fleet-config
+        configMap:
+          name: fleet-server-config
