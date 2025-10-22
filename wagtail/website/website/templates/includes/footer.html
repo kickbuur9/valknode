@@ -2,7 +2,7 @@
   <div class="container mx-auto px-6">
     <div class="flex flex-col md:flex-row justify-between items-center">
       <p class="text-sm">
-        &copy; { now:"Y" } {{ request.site.site_name|default:"Jager & Buur" }}.
+        &copy;{% now "Y" %} {{ request.site.site_name|default:"Jager & Buur" }}.
         All rights reserved.
       </p>
 

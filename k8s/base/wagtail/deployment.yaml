@@ -16,12 +16,11 @@ spec:
     spec:
       containers:
         - name: wagtail
-          image: kickb1/wagtail-site:dev
+          image: kickb1/wagtail-site:prod
           imagePullPolicy: Always
           ports:
             - containerPort: 8000
           env:
-            # Database Configuration
             - name: POSTGRES_DB
               value: wagtaildb
             - name: POSTGRES_USER
