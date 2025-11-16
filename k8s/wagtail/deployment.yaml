@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wagtail
+  namespace: website
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wagtail
+  template:
+    metadata:
+      labels:
+        app: wagtail
+    spec:
+      initContainers:
+        - name: wait-for-db
+          image: busybox:1.37
+          command:
+            ['sh', '-c', 'until nc -z -v -w30 postgres-service 5432; do echo "Waiting for PostgreSQL..."; sleep 2; done;']
+      containers:
+        - name: wagtail
+          image: kickb1/wagtail:3.2
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DJANGO_SETTINGS_MODULE
+              value: website.settings.production
+            - name: DATABASE_URL
+              value: postgres://wagtail:wagtail@postgres-service:5432/wagtail # temporary fix!
+            - name: SECRET_KEY
+              value: "_6y5lq+@*-b7qd^t#1pw%i3_f4+2w(-&ex@53r7!21kab*&vau" # temporary fix!
+          volumeMounts:
+            - name: static-volume
+              mountPath: /vol/web/static
+            - name: media-volume
+              mountPath: /vol/web/media
+      volumes:
+        - name: static-volume
+          persistentVolumeClaim:
+            claimName: wagtail-static-pvc
+        - name: media-volume
+          persistentVolumeClaim:
+            claimName: wagtail-media-pvc

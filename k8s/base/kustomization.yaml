@@ -1,8 +1,0 @@
-resources:
-  - nginx/deployment.yaml
-  - nginx/nginx-configmap.yaml
-  - nginx/service.yaml
-  - wagtail/deployment.yaml
-  - wagtail/service.yaml
-  - wagtail/pvc.yaml
-  - wagtail/wagtail-credentials.yaml

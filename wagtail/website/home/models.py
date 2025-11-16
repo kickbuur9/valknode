@@ -8,8 +8,6 @@ class HomePage(Page):
     intro = RichTextField(blank=True)
     body = RichTextField(blank=True)
 
-    subpage_types = ['home.GeneralPage']
-
     content_panels = Page.content_panels + [
         FieldPanel('intro'),
         FieldPanel('body'),

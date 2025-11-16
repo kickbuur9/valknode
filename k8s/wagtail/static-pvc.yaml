@@ -1,0 +1,13 @@
+# wagtail/wagtail-static-pvc.yaml (UPDATED)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: wagtail-static-pvc
+  namespace: website
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 1Gi

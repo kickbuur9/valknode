@@ -5,16 +5,29 @@
 {% block body_class %}template-blogindexpage{% endblock %}
 
 {% block content %}
-<h1>{{ page.title }}</h1>
+<ul>
+    {% for post in blogpages %}
+        {% with post.specific as blog %}
+        <li class="mb-6 p-4 border-b border-gray-300 dark:border-gray-700">
+            <h2 class="text-xl font-bold mb-1">
+                <a href="{{ blog.url }}" class="text-indigo-600 dark:text-indigo-400 hover:underline">
+                    {{ blog.title }}
+                </a>
+            </h2>
+            <p class="text-gray-500 dark:text-gray-400 text-sm mb-2">Post date: {{ blog.date }}</p>
+            <p class="text-gray-700 dark:text-gray-300">
+                {{ blog.body|striptags|truncatechars:200 }}
+            </p>
+        </li>
+        {% endwith %}
+    {% empty %}
+        <li>No posts found.</li>
+    {% endfor %}
+</ul>
 
-<div class="intro">{{ page.intro|richtext }}</div>
-
-{% for post in page.get_children %}
-    {% with post=post.specific %}
-        <h2><a href="{% pageurl post %}">{{ post.title }}</a></h2>
-        <p>{{ post.intro }}</p>
-    {{ post.body|richtext }}
-    {% endwith %}
-{% endfor %}
+<p>title: </p>{{ page.title|richtext }}
+<p>intro: </p>{{ page.intro|richtext }}
+<p>post date: </p>{{ post.date }}
+<p>post body: </p>{{ post.body|striptags|truncatechars:200 }}
 
 {% endblock %}

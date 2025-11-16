@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fleet-server-config
+  namespace: default
+data:
+  fleet.yml: |
+    # Fleet Server configuration
+    server:
+      host: "0.0.0.0"
+      port: 8220
+      ssl:
+        enabled: true
+        certificate: /usr/share/fleet/config/certs/tls.crt
+        key: /usr/share/fleet/config/certs/tls.key
+
+    # Elasticsearch connection - **FIXED: Use internal service DNS and port 9200**
+    elasticsearch:
+      hosts: ["https://elasticsearch.default.svc.cluster.local:9200"]
+      ssl:
+        certificateAuthorities: ["/usr/share/fleet/config/certs/ca.crt"]
+
+    # Fleet specific settings
+    fleet:
+      server:
+        enabled: true
+        service_token: "AAEAAWVsYXN0aWMvZmxlZXQtc2VydmVyL2ZsZWV0LXNlcnZlci10b2tlbnM6amdJbGQxcnFRaW04a2g2b21vTmZuQQ"
+        policy_id: "fleet-server-policy"
+      enroll:
+        enabled: true
+        # Kibana host - **FIXED: Use internal service DNS and port 5601**
+        kibana_host: "https://kibana.default.svc.cluster.local:5601"
+        setup: true
+        enrollment_token: "UUVmUWZwb0JfSjFmWkZ4WHRXU1g6MG50YTc3c2Vac3NkdFJDMlZYNlJIdw=="
+      # Fleet URL - **FIXED: Use internal service DNS and port 8220**
+      url: "https://fleet-server.default.svc.cluster.local:8220"

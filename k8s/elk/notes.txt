@@ -1,0 +1,41 @@
+####1
+sudo docker run -it --rm \
+  -v $(pwd):/config \
+  docker.elastic.co/elasticsearch/elasticsearch:9.2.1 \
+  bin/elasticsearch-certutil ca \
+  --pem \
+  --out /config/elastic-stack-ca.zip
+
+####2
+sudo docker run -it --rm \
+  -v $(pwd):/config \
+  docker.elastic.co/elasticsearch/elasticsearch:9.2.1 \
+  bin/elasticsearch-certutil cert \
+  --silent \
+  --pem \
+  --in /config/instances.yaml \
+  --out /config/elastic-certs.zip \
+  --ca-cert /config/ca/ca.crt \
+  --ca-key /config/ca/ca.key
+
+####3
+kk create secret generic elasticsearch-tls \
+  --from-file=tls.crt=elasticsearch/elasticsearch.crt \
+  --from-file=tls.key=elasticsearch/elasticsearch.key \
+  --from-file=ca.crt=ca/ca.crt
+
+kk create secret generic kibana-tls \
+  --from-file=tls.crt=kibana/kibana.crt \
+  --from-file=tls.key=kibana/kibana.key \
+  --from-file=ca.crt=ca/ca.crt
+
+kk create secret generic fleet-server-tls \
+  --from-file=tls.crt=fleet-server/fleet-server.crt \
+  --from-file=tls.key=fleet-server/fleet-server.key \
+  --from-file=ca.crt=ca/ca.crt
+
+####4
+curl -XGET 'https://localhost:9200/' --cacert /usr/share/elasticsearch/config/certs/ca/ca.crt --user elastic:Rockefeller1!
+
+curl -XGET 'https://elasticsearch.default.svc.cluster.local:9200/' --cacert /usr/share/kibana/config/certs/ca/ca.crt --user elastic:Rockefeller1!
+

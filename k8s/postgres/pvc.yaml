@@ -1,0 +1,15 @@
+# postgres/postgres-pvc.yaml (Update this file)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-data-pvc
+  namespace: website
+  labels:
+    app: postgres
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path 
+  resources:
+    requests:
+      storage: 5Gi

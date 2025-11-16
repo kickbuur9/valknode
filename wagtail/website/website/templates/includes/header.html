@@ -1,17 +1,37 @@
-<header class="bg-gray-900 text-white">
-  <div class="container mx-auto flex justify-between items-center py-4 px-6">
-    <a href="/" class="text-2xl font-bold hover:text-gray-300">
-      {{ request.site.site_name|default:"My Website" }}
-    </a>
+<header class="absolute inset-x-0 top-0 z-50">
+  <nav aria-label="Global" class="relative flex items-center justify-center p-6 lg:px-8">
 
-    <nav>
-      <ul class="flex space-x-6">
-        <li><a href="/" class="hover:text-gray-300">Home</a></li>
-        <li><a href="/about/" class="hover:text-gray-300">About</a></li>
-        <li><a href="/blog/" class="hover:text-gray-300">Blog</a></li>
-        <li><a href="/contact/" class="hover:text-gray-300">Contact</a></li>
-        <li><a href="/pricing/" class="hover:text-gray-300 animate-pulse">pricing</a></li>
-      </ul>
-    </nav>
-  </div>
+    <!-- Logo (left) -->
+    <div class="absolute left-6 flex items-center">
+      <a href="/" class="-m-1.5 p-1.5">
+        <span class="sr-only">{{ request.site.site_name|default:"Jager Buur" }}</span>
+        <img src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500" alt=""
+          class="h-8 w-auto" />
+      </a>
+    </div>
+
+    <!-- Centered desktop menu -->
+    <div class="hidden text-center lg:flex lg:gap-x-12">
+      <a href="/"
+        class="text-sm font-semibold {% if request.path == '/' %}text-indigo-400{% else %}text-white hover:text-indigo-400{% endif %}">
+        Home
+      </a>
+      <a href="/about/"
+        class="text-sm font-semibold {% if '/about/' in request.path %}text-indigo-400{% else %}text-white hover:text-indigo-400{% endif %}">
+        About
+      </a>
+      <a href="/blog/"
+        class="text-sm font-semibold {% if '/blog/' in request.path %}text-indigo-400{% else %}text-white hover:text-indigo-400{% endif %}">
+        Blog
+      </a>
+      <a href="/contact/"
+        class="text-sm font-semibold {% if '/contact/' in request.path %}text-indigo-400{% else %}text-white hover:text-indigo-400{% endif %}">
+        Contact
+      </a>
+      <a href="/pricing/"
+        class="text-sm font-semibold {% if '/pricing/' in request.path %}text-indigo-400{% else %}text-white hover:text-indigo-400{% endif %}">
+        Pricing
+      </a>
+    </div>
+  </nav>
 </header>

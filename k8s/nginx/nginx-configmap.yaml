@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-configmap-conf
+  namespace: website
+data:
+  default.conf: |
+    server {
+        listen 80;
+        server_name localhost kickb.dev;
+
+        # Serve static files directly
+        location /static/ {
+            alias /vol/web/static/;
+            add_header Cache-Control "public, immutable";
+            access_log off;
+        }
+
+        # Serve media files directly
+        location /media/ {
+            alias /vol/web/media/;
+            # expires 30d;
+            add_header Cache-Control "public";
+        }
+
+        # Proxy all other requests to Wagtail
+        location / {
+            proxy_pass http://wagtail-service:8000;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+    }

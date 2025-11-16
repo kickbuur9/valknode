@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: website
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-wagtail
+  template:
+    metadata:
+      labels:
+        app: nginx-wagtail
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:stable
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: nginx-conf
+              mountPath: /etc/nginx/conf.d
+            - name: static-volume
+              mountPath: /vol/web/static
+            - name: media-volume
+              mountPath: /vol/web/media
+      volumes:
+        - name: nginx-conf
+          configMap:
+            name: nginx-configmap-conf
+        - name: static-volume
+          persistentVolumeClaim:
+            claimName: wagtail-static-pvc
+        - name: media-volume
+          persistentVolumeClaim:
+            claimName: wagtail-media-pvc

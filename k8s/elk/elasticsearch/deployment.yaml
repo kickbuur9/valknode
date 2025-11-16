@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elasticsearch
+  namespace: elastic
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: elasticsearch
+  template:
+    metadata:
+      labels:
+        component: elasticsearch
+    spec:
+      containers:
+      - name: elasticsearch
+        image: docker.elastic.co/elasticsearch/elasticsearch:9.2.1
+        env:
+        - name: discovery.type
+          value: single-node
+        - name: ELASTIC_PASSWORD
+          value: "Rockefeller1!"
+        - name: ES_JAVA_OPTS
+          value: "-Xms1g -Xmx1g"
+        ports:
+        - containerPort: 9200
+          name: http
+        - containerPort: 9300
+          name: transport
+        volumeMounts:
+        - name: es-data
+          mountPath: /usr/share/elasticsearch/data
+        # - name: elasticsearch-tls-certs
+        #   mountPath: /usr/share/elasticsearch/config/certs
+        #   readOnly: true
+        - name: elasticsearch-config
+          mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+          subPath: elasticsearch.yml
+        resources:
+          requests:
+            memory: "4Gi"
+            cpu: "1"
+      volumes:
+      - name: es-data
+        persistentVolumeClaim:
+          claimName: es-data-pvc
+      # - name: elasticsearch-tls-certs
+      #   secret:
+      #     secretName: elasticsearch-tls
+      - name: elasticsearch-config
+        configMap:
+          name: elasticsearch-config
