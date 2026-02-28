@@ -1,8 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: wagtail-ingress
-  namespace: website
+  name: nextcloud-ingress
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
     nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
@@ -10,16 +9,16 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - kickb.dev
-      secretName: wagtail-tls-secret2
+        - nextcloud.kickb.dev
+      secretName: nextcloud-tls-secret2
   rules:
-    - host: kickb.dev
+    - host: nextcloud.kickb.dev
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: nginx-wagtail-service
+                name: nextcloud-service
                 port:
                   number: 80

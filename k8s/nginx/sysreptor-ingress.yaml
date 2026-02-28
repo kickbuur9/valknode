@@ -1,8 +1,8 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: wagtail-ingress
-  namespace: website
+  name: sysreptor-ingress
+  namespace: sysreptor
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
     nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
@@ -10,16 +10,16 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - kickb.dev
+        - reporting.kickb.dev
       secretName: wagtail-tls-secret2
   rules:
-    - host: kickb.dev
+    - host: reporting.kickb.dev
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: nginx-wagtail-service
+                name: sysreptor
                 port:
                   number: 80

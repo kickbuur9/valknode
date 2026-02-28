@@ -8,10 +8,11 @@ data:
     cluster.name: "elk-cluster"
     node.name: "${HOSTNAME}"
     network.host: 0.0.0.0
-    discovery.type: single-node
+    discovery.type: single-node   
 
-    xpack.security.enabled: false
-    
+    xpack.security.enabled: true
+    xpack.security.enrollment.enabled: true
+
     # # Transport layer (node-to-node) TLS
     # xpack.security.transport.ssl.enabled: true
     # xpack.security.transport.ssl.verification_mode: certificate

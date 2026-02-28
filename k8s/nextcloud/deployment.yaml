@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud-deployment
+  labels:
+    app: nextcloud
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nextcloud
+  template:
+    metadata:
+      labels:
+        app: nextcloud
+    spec:
+      containers:
+      - name: nextcloud
+        image: nextcloud:31.0.13-apache
+        ports:
+        - containerPort: 80

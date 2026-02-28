@@ -15,20 +15,17 @@ spec:
     spec:
       containers:
       - name: kibana
-        image: docker.elastic.co/kibana/kibana:9.2.1
+        image: docker.elastic.co/kibana/kibana:9.2.3
         ports:
         - containerPort: 5601
           name: http
         env:
         - name: ELASTICSEARCH_SERVICE_TOKEN
-          value: "AAEAAWVsYXN0aWMva2liYW5hL2tpYmFuYS10b2tlbjplUVh2Rno1ZFR6MlNzSHUzQ05FOF9R"
+          value: "AAEAAWVsYXN0aWMva2liYW5hL2tpYmFuYS10b2tlbjpjVjRFVDdJelFnaW1ZZzkyaVN3WlBn"
         volumeMounts:
         - name: kibana-config
           mountPath: /usr/share/kibana/config/kibana.yml
           subPath: kibana.yml
-        # - name: kibana-tls-certs
-        #   mountPath: /usr/share/kibana/config/certs
-        #   readOnly: true
         resources:
           requests:
             memory: "2Gi"
@@ -37,6 +34,3 @@ spec:
       - name: kibana-config
         configMap:
           name: kibana-config
-      # - name: kibana-tls-certs
-      #   secret:
-      #     secretName: kibana-tls

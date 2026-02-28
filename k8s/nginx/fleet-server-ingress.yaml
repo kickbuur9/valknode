@@ -1,8 +1,8 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: wagtail-ingress
-  namespace: website
+  name: fleet-server-ingress
+  namespace: elastic
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
     nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
@@ -10,16 +10,16 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - kickb.dev
-      secretName: wagtail-tls-secret2
+        - fleet-server.kickb.dev
+      secretName: wagtail-tls-secret3
   rules:
-    - host: kickb.dev
+    - host: fleet-server.kickb.dev
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: nginx-wagtail-service
+                name: fleet-server
                 port:
-                  number: 80
+                  number: 8220

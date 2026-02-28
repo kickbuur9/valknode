@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: es-data-pvc
+  name: elasticsearch-pvc
   namespace: elastic
 spec:
   accessModes:

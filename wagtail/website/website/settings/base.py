@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     "blog",
     "home",
     "search",
+    "about",
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
     "wagtail.embeds",

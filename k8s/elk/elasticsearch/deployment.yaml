@@ -13,41 +13,37 @@ spec:
       labels:
         component: elasticsearch
     spec:
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
       containers:
       - name: elasticsearch
-        image: docker.elastic.co/elasticsearch/elasticsearch:9.2.1
+        image: docker.elastic.co/elasticsearch/elasticsearch:9.2.3
         env:
         - name: discovery.type
           value: single-node
-        - name: ELASTIC_PASSWORD
-          value: "Rockefeller1!"
         - name: ES_JAVA_OPTS
           value: "-Xms1g -Xmx1g"
+        - name: ELASTIC_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: elastic-credentials
+              key: elastic-password
         ports:
         - containerPort: 9200
-          name: http
-        - containerPort: 9300
-          name: transport
         volumeMounts:
-        - name: es-data
+        - name: elasticsearch-data
           mountPath: /usr/share/elasticsearch/data
-        # - name: elasticsearch-tls-certs
-        #   mountPath: /usr/share/elasticsearch/config/certs
-        #   readOnly: true
         - name: elasticsearch-config
           mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           subPath: elasticsearch.yml
-        resources:
-          requests:
-            memory: "4Gi"
-            cpu: "1"
+
       volumes:
-      - name: es-data
+      - name: elasticsearch-data
         persistentVolumeClaim:
-          claimName: es-data-pvc
-      # - name: elasticsearch-tls-certs
-      #   secret:
-      #     secretName: elasticsearch-tls
+          claimName: elasticsearch-pvc
+
       - name: elasticsearch-config
         configMap:
           name: elasticsearch-config
+          defaultMode: 0600

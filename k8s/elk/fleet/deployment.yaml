@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: fleet-server
-  namespace: default
+  namespace: elastic
 spec:
   replicas: 1
   selector:
@@ -13,54 +13,55 @@ spec:
       labels:
         app: fleet-server
     spec:
+      securityContext:
+        fsGroup: 0
+        runAsUser: 0
       containers:
         - name: fleet-server
-          image: docker.elastic.co/elastic-agent/elastic-agent:9.2.1
+          image: docker.elastic.co/elastic-agent/elastic-agent:9.2.3
           env:
-            # Fleet Server general settings
             - name: FLEET_ENROLL
               value: "1"
             - name: FLEET_SERVER_ENABLE
               value: "1"
+
+            # Fleet bind settings
             - name: FLEET_SERVER_HOST
               value: "0.0.0.0"
             - name: FLEET_SERVER_PORT
               value: "8220"
-            - name: FLEET_SERVER_POLICY_ID
-              value: "d3a0fff5-45db-461e-b19d-28dd74a76dbf"
-            - name: FLEET_SERVER_SERVICE_TOKEN
-              value: "AAEAAWVsYXN0aWMvZmxlZXQtc2VydmVyL2ZsZWV0LXNlcnZlci10b2tlbjp6YWVwTlpCd1NvdWdjYmZfNVRQeEZB"
-            
-            # Fleet URL (for agents) - Uses internal service DNS
-            - name: FLEET_URL
-              value: "https://fleet-server.default.svc.cluster.local:8220"
 
-            # Enrollment to Kibana - Uses internal service DNS
+            # Policy and tokens
+            - name: FLEET_SERVER_POLICY_ID
+              value: "fleet-server-policy"
+            - name: FLEET_SERVER_SERVICE_TOKEN
+              value: "AAEAAWVsYXN0aWMvZmxlZXQtc2VydmVyL2ZsZWV0LXNlcnZlci10b2tlbjplMkgwaWxqR1RYSzg2OVdOUVlJZUZn"
+
+            # Explicitly use port 443 for the Ingress
+            - name: FLEET_URL
+              value: "https://fleet-server.kickb.dev:443"
+
+            # Enrollment token
             - name: FLEET_ENROLLMENT_TOKEN
-              value: "UUVmUWZwb0JfSjFmWkZ4WHRXU1g6MG50YTc3c2Vac3NkdFJDMlZYNlJIdw=="
+              value: "TFhFYlpac0I5TWY3bVBQRVVyNnM6N3dlR1E2ZUIwV080WDNXRkhTcnNmZw=="
+
+            # Public Kibana URL
             - name: KIBANA_HOST
-              value: "https://kibana.default.svc.cluster.local:5601"
+              value: "https://kibana.kickb.dev:443"
+
             - name: KIBANA_FLEET_SETUP
               value: "true"
+            - name: FLEET_SERVER_INSECURE_HTTP
+              value: "true"
 
-            # Fleet Server TLS (for agents connecting to Fleet Server)
-            - name: FLEET_SERVER_CERT
-              value: "/usr/share/fleet/config/certs/tls.crt"
-            - name: FLEET_SERVER_CERT_KEY
-              value: "/usr/share/fleet/config/certs/tls.key"
-
-            # Elasticsearch TLS verification (cluster-internal) - Uses internal service DNS
+            # FIX: Added :443 to the host URL
+            # - name: FLEET_SERVER_ELASTICSEARCH_HOST
+            #   value: "https://elasticsearch.kickb.dev:443"
             - name: FLEET_SERVER_ELASTICSEARCH_HOST
-              value: "https://elasticsearch.default.svc.cluster.local:9200"
-            - name: FLEET_SERVER_ELASTICSEARCH_CA
-              value: "/usr/share/fleet/config/certs/ca.crt"
+              value: "http://elasticsearch:9200"
 
-          volumeMounts:
-            - name: fleet-certs
-              mountPath: /usr/share/fleet/config/certs
-              readOnly: true
-
-      volumes:
-        - name: fleet-certs
-          secret:
-            secretName: fleet-server-tls
+            # Required if the agent cannot verify the Let's Encrypt CA internally
+            - name: FLEET_SERVER_ELASTICSEARCH_INSECURE
+              value: "true"
+            - name: FLEET_INSECURE
+              value: "true"

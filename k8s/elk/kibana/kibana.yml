@@ -20,15 +20,22 @@ data:
     # elasticsearch.ssl.certificate: /usr/share/kibana/config/certs/tls.crt
     # elasticsearch.ssl.key: /usr/share/kibana/config/certs/tls.key
     # elasticsearch.ssl.verificationMode: full
-    # elasticsearch.serviceAccountToken: ${ELASTICSEARCH_SERVICE_TOKEN}
+    elasticsearch.serviceAccountToken: ${ELASTICSEARCH_SERVICE_TOKEN}
 
     # # X-Pack encryption keys
-    # xpack.encryptedSavedObjects.encryptionKey: c4dc79cec498fbf900819cd4da2e66e7
-    # xpack.reporting.encryptionKey: aff00a79bbb5e99ecd19a2e9298cc711
-    # xpack.security.encryptionKey: 32f6f8e4a5b4c3d2e1f0a9b8c7d6e5f4
+    xpack.encryptedSavedObjects.encryptionKey: 8d07753a919f250419a29b324c8be83f
+    xpack.reporting.encryptionKey: 68a4f60684bbe19f21074421fdb9adc6
+    xpack.security.encryptionKey: 2ca35b24b8d36228ab1d07c8af060271
+
+    #elasticsearch.hosts: [ "https://elasticsearch.kickb.dev" ]
+    elasticsearch.hosts: [ "http://elasticsearch:9200" ]
+    
+    xpack.fleet.agents.fleet_server.hosts: ["https://fleet-server.kickb.dev"]
+    xpack.fleet.agents.elasticsearch.hosts: ["https://elasticsearch.kickb.dev"]
+    #xpack.fleet.agents.elasticsearch.hosts: [ "http://elasticsearch.elastic.svc.cluster.local:9200" ]
 
     # Fleet settings - Uses internal service DNS
     # xpack.fleet.agents.fleet_server.hosts:
-    #   - "https://fleet-server.default.svc.cluster.local:8220"
-    # xpack.fleet.agents.elasticsearch.hosts:
-    #   - "https://elasticsearch.default.svc.cluster.local:9200"
+    #   - "https://fleet-server:8220"
+    #xpack.fleet.agents.elasticsearch.hosts:
+    #   - "http://elasticsearch:9200"

@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sysreptor
+  namespace: sysreptor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sysreptor
+  template:
+    metadata:
+      labels:
+        app: sysreptor
+    spec:
+      containers:
+        - name: sysreptor
+          image: syslifters/sysreptor:2025.104
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DATABASE_ENGINE
+              value: django.db.backends.postgresql
+            - name: DATABASE_NAME
+              value: sysreptor
+            - name: DATABASE_USER
+              value: sysreptor
+            - name: DATABASE_PASSWORD
+              value: sysreptor
+            - name: DATABASE_HOST
+              value: sysreptor-postgres
+            - name: DATABASE_PORT
+              value: "5432"
